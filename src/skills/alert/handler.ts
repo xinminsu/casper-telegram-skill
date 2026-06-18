@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { Context } from 'telegraf';
 import { logger } from '../../utils/logger';
 
 // Simple in-memory storage (production should use database)
@@ -8,19 +8,26 @@ interface Alert {
   address?: string;
   threshold?: number;
   message?: string;
-  channelId: string;
+  chatId: number;
   createdAt: Date;
 }
 
 const alerts: Map<string, Alert> = new Map();
 
-export async function handleAlertAdd(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
+export async function handleAlertAdd(ctx: Context) {
+  // Get command arguments from message text
+  const text = ctx.message && 'text' in ctx.message ? ctx.message.text : '';
+  const args = text.split(' ').slice(1); // Remove command name
+  
+  if (args.length < 1) {
+    await ctx.reply('❌ Usage: /alert-add <type> [address] [threshold] [message]\nTypes: balance, gas, custom');
+    return;
+  }
 
-  const type = interaction.options.getString('type', true);
-  const address = interaction.options.getString('address');
-  const threshold = interaction.options.getNumber('threshold');
-  const message = interaction.options.getString('message');
+  const type = args[0];
+  const address = args[1];
+  const threshold = args[2] ? parseFloat(args[2]) : undefined;
+  const message = args.slice(3).join(' ') || undefined;
 
   const alertId = `alert_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
@@ -30,89 +37,80 @@ export async function handleAlertAdd(interaction: ChatInputCommandInteraction) {
     address: address || undefined,
     threshold: threshold || undefined,
     message: message || undefined,
-    channelId: interaction.channelId,
+    chatId: ctx.chat?.id || 0,
     createdAt: new Date(),
   };
 
   alerts.set(alertId, alert);
 
-  const embed = new EmbedBuilder()
-    .setTitle('✅ Alert Created')
-    .setColor(0x00FF00)
-    .addFields(
-      { name: 'Alert ID', value: `\`${alertId}\``, inline: false },
-      { name: 'Type', value: type, inline: true },
-      { name: 'Channel', value: `<#${interaction.channelId}>`, inline: true }
-    )
-    .setTimestamp();
-
+  let response = 
+    `✅ Alert Created\n\n` +
+    `*Alert ID:* \`${alertId}\`\n` +
+    `*Type:* ${type}\n`;
+  
   if (address) {
-    embed.addFields({ name: 'Monitored Address', value: `\`${address}\``, inline: false });
+    response += `*Monitored Address:* \`${address}\`\n`;
   }
   if (threshold) {
-    embed.addFields({ name: 'Threshold', value: `${threshold}`, inline: true });
+    response += `*Threshold:* ${threshold}\n`;
   }
   if (message) {
-    embed.addFields({ name: 'Message', value: message, inline: false });
+    response += `*Message:* ${message}\n`;
   }
 
-  await interaction.editReply({
-    embeds: [embed],
-  });
+  await ctx.reply(response, { parse_mode: 'Markdown' });
 
   logger.info(`Alert created: ${alertId} (${type})`);
 }
 
-export async function handleAlertList(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
-
+export async function handleAlertList(ctx: Context) {
+  const chatId = ctx.chat?.id || 0;
   const userAlerts = Array.from(alerts.values()).filter(
-    alert => alert.channelId === interaction.channelId
+    alert => alert.chatId === chatId
   );
 
   if (userAlerts.length === 0) {
-    await interaction.editReply({
-      content: '📭 No alerts set up in current channel',
-    });
+    await ctx.reply('📭 No alerts set up in current chat');
     return;
   }
 
-  const embed = new EmbedBuilder()
-    .setTitle('📋 Alert List')
-    .setColor(0x0099FF)
-    .setDescription(`Total ${userAlerts.length} alerts`)
-    .setTimestamp();
-
+  let response = `📋 Alert List\n\nTotal ${userAlerts.length} alerts\n\n`;
+  
   userAlerts.forEach((alert, index) => {
-    embed.addFields({
-      name: `${index + 1}. ${alert.type}`,
-      value: `ID: \`${alert.id}\`\n${alert.address ? `Address: \`${alert.address}\`` : ''}${alert.threshold ? `\nThreshold: ${alert.threshold}` : ''}`,
-      inline: false,
-    });
+    response += `${index + 1}. *${alert.type}*\n`;
+    response += `ID: \`${alert.id}\`\n`;
+    if (alert.address) {
+      response += `Address: \`${alert.address}\`\n`;
+    }
+    if (alert.threshold) {
+      response += `Threshold: ${alert.threshold}\n`;
+    }
+    response += '\n';
   });
 
-  await interaction.editReply({
-    embeds: [embed],
-  });
+  await ctx.reply(response, { parse_mode: 'Markdown' });
 }
 
-export async function handleAlertRemove(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
+export async function handleAlertRemove(ctx: Context) {
+  // Get command arguments from message text
+  const text = ctx.message && 'text' in ctx.message ? ctx.message.text : '';
+  const args = text.split(' ').slice(1); // Remove command name
+  
+  if (args.length < 1) {
+    await ctx.reply('❌ Usage: /alert-remove <alert_id>');
+    return;
+  }
 
-  const alertId = interaction.options.getString('id', true);
+  const alertId = args[0];
 
   if (!alerts.has(alertId)) {
-    await interaction.editReply({
-      content: '❌ Alert ID not found',
-    });
+    await ctx.reply('❌ Alert ID not found');
     return;
   }
 
   alerts.delete(alertId);
 
-  await interaction.editReply({
-    content: `✅ Alert \`${alertId}\` deleted`,
-  });
+  await ctx.reply(`✅ Alert \`${alertId}\` deleted`);
 
   logger.info(`Alert deleted: ${alertId}`);
 }

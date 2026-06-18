@@ -18,7 +18,7 @@ Or after the fix:
 
 ## Root Cause
 
-The Pharos RPC endpoint (`https://rpc.pharos.network`) is:
+The Casper RPC endpoint (`https://rpc.casper.network`) is:
 - **Slow to respond** or
 - **Currently unavailable** or
 - **Rate limiting requests**
@@ -56,7 +56,7 @@ Users now see helpful error messages instead of cryptic timeout codes.
 
 **After:**
 ```
-❌ Pharos RPC node is not responding. Please check your connection or try again later.
+❌ Casper RPC node is not responding. Please check your connection or try again later.
 ```
 
 ### 3. Provider Configuration
@@ -76,25 +76,25 @@ new ethers.JsonRpcProvider(rpcUrls.pharos, undefined, {
 
 ### Solution 1: Use Alternative RPC URL (Recommended)
 
-If the default Pharos RPC is slow, try these alternatives:
+If the default Casper RPC is slow, try these alternatives:
 
-#### Option A: Public Pharos RPCs
+#### Option A: Public Casper RPCs
 ```env
 # Try different endpoints
-PHAROS_RPC_URL=https://pharos-testnet-rpc.example.com
+CASPER_RPC_URL=https://casper-testnet-rpc.example.com
 # or
-PHAROS_RPC_URL=https://pharos-mainnet.example.org/rpc
+CASPER_RPC_URL=https://casper-mainnet.example.org/rpc
 ```
 
 #### Option B: Run Your Own Node
 ```bash
-# If you have access to a Pharos node
-PHAROS_RPC_URL=http://localhost:8545
+# If you have access to a Casper node
+CASPER_RPC_URL=http://localhost:8545
 ```
 
-#### Option C: Use Infura/Alchemy (if they support Pharos)
+#### Option C: Use Infura/Alchemy (if they support Casper)
 ```env
-PHAROS_RPC_URL=https://pharos.infura.io/v3/YOUR_PROJECT_ID
+CASPER_RPC_URL=https://casper.infura.io/v3/YOUR_PROJECT_ID
 ```
 
 ### Solution 2: Increase Timeout
@@ -139,7 +139,7 @@ async function retryWithBackoff<T>(
 
 Open this URL in your browser:
 ```
-https://rpc.pharos.network
+https://rpc.casper.network
 ```
 
 **Expected**: Should show some JSON-RPC response or error page  
@@ -148,7 +148,7 @@ https://rpc.pharos.network
 ### Test 2: Use curl
 
 ```bash
-curl -X POST https://rpc.pharos.network \
+curl -X POST https://rpc.casper.network \
   -H "Content-Type: application/json" \
   -d '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
 ```
@@ -166,7 +166,7 @@ Create a test script:
 const { ethers } = require('ethers');
 
 async function testRPC() {
-  const provider = new ethers.JsonRpcProvider('https://rpc.pharos.network');
+  const provider = new ethers.JsonRpcProvider('https://rpc.casper.network');
   
   try {
     const blockNumber = await provider.getBlockNumber();

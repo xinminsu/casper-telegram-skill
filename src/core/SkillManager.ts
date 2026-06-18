@@ -1,6 +1,6 @@
 import { SkillRegistry } from '../skills/SkillRegistry';
 import { Skill } from '../skills/types';
-import { ChatInputCommandInteraction } from 'discord.js';
+import { Context } from 'telegraf';
 import { logger } from '../utils/logger';
 
 /**
@@ -79,11 +79,9 @@ export class SkillManager {
   /**
    * Handle a command interaction
    * Routes the interaction to the appropriate skill
-   * @param interaction - The Discord command interaction
+   * @param ctx - The Telegram context
    */
-  async handleCommand(interaction: ChatInputCommandInteraction): Promise<void> {
-    const commandName = interaction.commandName;
-    
+  async handleCommand(ctx: Context, commandName: string): Promise<void> {
     // Find which skill owns this command
     const skill = this.findSkillForCommand(commandName);
     
@@ -94,16 +92,11 @@ export class SkillManager {
     
     try {
       // Delegate to the skill's handler
-      await skill.handleCommand(interaction);
+      await skill.handleCommand(ctx);
     } catch (error) {
       logger.error(`Error handling command "${commandName}" in skill "${skill.name}":`, error);
       
-      if (!interaction.replied) {
-        await interaction.reply({
-          content: '❌ An error occurred while processing your command',
-          ephemeral: true,
-        });
-      }
+      await ctx.reply('❌ An error occurred while processing your command');
     }
   }
   
@@ -116,7 +109,7 @@ export class SkillManager {
     const skills = this.registry.getAllSkills();
     
     for (const skill of skills) {
-      const hasCommand = skill.commands.some((cmd: any) => cmd.name === commandName);
+      const hasCommand = skill.commands.some(cmd => cmd === commandName);
       if (hasCommand) {
         return skill;
       }

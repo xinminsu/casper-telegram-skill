@@ -1,17 +1,17 @@
 const { ethers } = require('ethers');
 
 async function testRPC() {
-  const rpcUrl = 'https://api.zan.top/node/v1/pharos/mainnet/9e5129893df34af4976d9b8c1b41e0dc';
-  const chainId = 1672;
+  const rpcUrl = 'https://rpc.casper.network';
+  const chainId = 1;
   
-  console.log('Testing Pharos RPC endpoint...\n');
+  console.log('Testing Casper RPC endpoint...\n');
   console.log('URL:', rpcUrl);
   console.log('Chain ID:', chainId);
   console.log('');
   
   const network = {
     chainId: chainId,
-    name: 'pharos'
+    name: 'casper'
   };
   
   const provider = new ethers.JsonRpcProvider(rpcUrl, network, {

@@ -80,7 +80,7 @@ async function checkBalanceAlert(alertId: string, alert: any) {
 
     if (balanceNum >= alert.threshold) {
       await sendAlertNotification(
-        alert.channelId,
+        alert.chatId,
         `💰 Balance alert triggered!\n\nAddress: \`${alert.address}\`\nCurrent Balance: ${balance} ETH\nThreshold: ${alert.threshold} ETH`
       );
       
@@ -105,7 +105,7 @@ async function checkGasAlert(alertId: string, alert: any) {
 
     if (gasPriceNum <= alert.threshold) {
       await sendAlertNotification(
-        alert.channelId,
+        alert.chatId,
         `⛽ Gas price alert triggered!\n\nCurrent Gas Price: ${gasPrices.gasPrice}\nThreshold: ${alert.threshold} Gwei\nMax Fee: ${gasPrices.maxFeePerGas}\nPriority Fee: ${gasPrices.maxPriorityFeePerGas}`
       );
       
@@ -117,14 +117,14 @@ async function checkGasAlert(alertId: string, alert: any) {
 }
 
 /**
- * Send alert notification to channel
+ * Send alert notification to chat
  */
-async function sendAlertNotification(channelId: string, message: string) {
+async function sendAlertNotification(chatId: number, message: string) {
   try {
-    // Note: This requires access to the Discord client
-    // In production, you'd inject the client or use an event emitter
-    logger.info(`Would send alert to channel ${channelId}: ${message}`);
+    // Note: This requires access to the Telegram bot instance
+    // In production, you'd inject the bot or use an event emitter
+    logger.info(`Would send alert to chat ${chatId}: ${message}`);
   } catch (error) {
-    logger.error(`Failed to send alert notification (channel: ${channelId}):`, error);
+    logger.error(`Failed to send alert notification (chat: ${chatId}):`, error);
   }
 }

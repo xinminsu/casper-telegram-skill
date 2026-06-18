@@ -1,36 +1,27 @@
-import { ChatInputCommandInteraction } from 'discord.js';
+import { Context } from 'telegraf';
 import { logger } from '../../utils/logger';
 
-export async function handlePushCommand(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
+export async function handlePushCommand(ctx: Context) {
+  // Get command arguments from message text
+  const text = ctx.message && 'text' in ctx.message ? ctx.message.text : '';
+  const args = text.split(' ').slice(1); // Remove command name
+  
+  if (args.length < 1) {
+    await ctx.reply('❌ Usage: /push <message>');
+    return;
+  }
 
-  const message = interaction.options.getString('message', true);
-  const channel = interaction.options.getChannel('channel');
+  const message = args.join(' ');
 
   try {
-    const targetChannel = channel || interaction.channel;
+    // Send message to current chat
+    await ctx.reply(`📢 *Casper Notification*\n\n${message}`, { parse_mode: 'Markdown' });
 
-    if (!targetChannel || !('send' in targetChannel)) {
-      await interaction.editReply({
-        content: '❌ Cannot find target channel',
-      });
-      return;
-    }
+    await ctx.reply('✅ Message pushed successfully');
 
-    // Send message to specified channel
-    await targetChannel.send({
-      content: `📢 **Pharos Notification**\n\n${message}`,
-    });
-
-    await interaction.editReply({
-      content: '✅ Message pushed successfully',
-    });
-
-    logger.info(`Message pushed to channel: ${targetChannel.id}`);
+    logger.info(`Message pushed to chat: ${ctx.chat?.id}`);
   } catch (error) {
     logger.error('Message push failed:', error);
-    await interaction.editReply({
-      content: `❌ Push failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-    });
+    await ctx.reply(`❌ Push failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 }

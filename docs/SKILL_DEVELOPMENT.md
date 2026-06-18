@@ -2,11 +2,11 @@
 
 ## Overview
 
-This guide explains how to create new skills for the Pharos Discord Bot using the Skill-based architecture.
+This guide explains how to create new skills for the Casper Telegram Bot using the Skill-based architecture.
 
 ## What is a Skill?
 
-A **Skill** is a modular, self-contained feature that provides specific functionality to the Discord bot. Each skill:
+A **Skill** is a modular, self-contained feature that provides specific functionality to the Telegram bot. Each skill:
 - Has its own commands
 - Handles its own business logic
 - Can be independently loaded/unloaded
@@ -37,16 +37,8 @@ mkdir -p src/skills/my-skill
 Create `commands.ts`:
 
 ```typescript
-import { SlashCommandBuilder } from 'discord.js';
-
-export const myCommand = new SlashCommandBuilder()
-  .setName('my-command')
-  .setDescription('Description of what this command does')
-  .addStringOption(option =>
-    option.setName('parameter')
-      .setDescription('Parameter description')
-      .setRequired(true)
-  );
+// Telegram commands are simple string arrays
+export const myCommands = ['my-command'];
 ```
 
 ### Step 3: Create Handler
@@ -54,28 +46,24 @@ export const myCommand = new SlashCommandBuilder()
 Create `handler.ts`:
 
 ```typescript
-import { ChatInputCommandInteraction } from 'discord.js';
+import { Context } from 'telegraf';
 import { logger } from '../../utils/logger';
 
-export async function handleMyCommand(interaction: ChatInputCommandInteraction) {
-  await interaction.deferReply();
-  
-  // Get parameters
-  const param = interaction.options.getString('parameter', true);
+export async function handleMyCommand(ctx: Context) {
+  // Get command arguments from message text
+  const text = ctx.message && 'text' in ctx.message ? ctx.message.text : '';
+  const args = text.split(' ').slice(1); // Remove command name
   
   try {
     // Your business logic here
+    const param = args[0];
     
-    await interaction.editReply({
-      content: '✅ Success!',
-    });
+    await ctx.reply('✅ Success!');
     
     logger.info('My command executed successfully');
   } catch (error) {
     logger.error('My command failed:', error);
-    await interaction.editReply({
-      content: '❌ Error occurred',
-    });
+    await ctx.reply('❌ Error occurred');
   }
 }
 ```
@@ -86,8 +74,8 @@ Create `{SkillName}Skill.ts`:
 
 ```typescript
 import { BaseSkill } from '../../skills/BaseSkill';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { myCommand } from './commands';
+import { Context } from 'telegraf';
+import { myCommands } from './commands';
 import { handleMyCommand } from './handler';
 
 export class MySkill extends BaseSkill {
@@ -97,19 +85,21 @@ export class MySkill extends BaseSkill {
       version: '1.0.0',
       description: 'Description of your skill',
       author: 'Your Name',
-      commands: [myCommand],
+      commands: myCommands,
     });
   }
   
-  async handleCommand(interaction: ChatInputCommandInteraction): Promise<void> {
-    const subcommand = interaction.options.getSubcommand?.();
+  async handleCommand(ctx: Context): Promise<void> {
+    // Get command name from message text
+    const text = ctx.message && 'text' in ctx.message ? ctx.message.text : '';
+    const commandName = text.split(' ')[0].replace('/', '');
     
-    switch (interaction.commandName) {
+    switch (commandName) {
       case 'my-command':
-        await handleMyCommand(interaction);
+        await handleMyCommand(ctx);
         break;
       default:
-        throw new Error(`Unknown command: ${interaction.commandName}`);
+        throw new Error(`Unknown command: ${commandName}`);
     }
   }
 }
@@ -357,8 +347,8 @@ Check:
 
 ## Resources
 
-- [Discord.js Guide](https://discordjs.guide/)
-- [Slash Commands Documentation](https://discord.com/developers/docs/interactions/application-commands)
+- [Telegraf Documentation](https://telegraf.js.org/)
+- [Telegram Bot API](https://core.telegram.org/bots/api)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 
 ---

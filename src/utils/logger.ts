@@ -12,7 +12,7 @@ export const logger = winston.createLogger({
     winston.format.splat(),
     winston.format.json()
   ),
-  defaultMeta: { service: 'pharos-discord-bot' },
+  defaultMeta: { service: 'casper-telegram-bot' },
   transports: [
     new winston.transports.Console({
       format: winston.format.combine(

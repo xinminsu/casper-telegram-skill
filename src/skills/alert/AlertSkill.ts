@@ -1,6 +1,6 @@
 import { BaseSkill } from '../../skills/BaseSkill';
-import { ChatInputCommandInteraction } from 'discord.js';
-import { alertCommand } from './commands';
+import { Context } from 'telegraf';
+import { alertCommands } from './commands';
 import { handleAlertAdd, handleAlertList, handleAlertRemove } from './handler';
 import { startAlertService, stopAlertService } from './scheduler';
 
@@ -15,8 +15,8 @@ export class AlertSkill extends BaseSkill {
       name: 'alert',
       version: '1.0.0',
       description: 'Monitor blockchain events and send notifications',
-      author: 'Pharos Team',
-      commands: [alertCommand],
+      author: 'Casper Team',
+      commands: alertCommands,
     });
   }
   
@@ -27,21 +27,23 @@ export class AlertSkill extends BaseSkill {
     startAlertService();
   }
   
-  async handleCommand(interaction: ChatInputCommandInteraction): Promise<void> {
-    const subcommand = interaction.options.getSubcommand();
+  async handleCommand(ctx: Context): Promise<void> {
+    // Get command name from message text
+    const text = ctx.message && 'text' in ctx.message ? ctx.message.text : '';
+    const commandName = text.split(' ')[0].replace('/', '');
     
-    switch (subcommand) {
-      case 'add':
-        await handleAlertAdd(interaction);
+    switch (commandName) {
+      case 'alert-add':
+        await handleAlertAdd(ctx);
         break;
-      case 'list':
-        await handleAlertList(interaction);
+      case 'alert-list':
+        await handleAlertList(ctx);
         break;
-      case 'remove':
-        await handleAlertRemove(interaction);
+      case 'alert-remove':
+        await handleAlertRemove(ctx);
         break;
       default:
-        throw new Error(`Unknown subcommand: ${subcommand}`);
+        throw new Error(`Unknown command: ${commandName}`);
     }
   }
   

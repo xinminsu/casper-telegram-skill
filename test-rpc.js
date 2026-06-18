@@ -1,6 +1,6 @@
 const https = require('https');
 
-const url = 'https://api.zan.top/node/v1/pharos/mainnet/9e5129893df34af4976d9b8c1b41e0dc';
+const url = 'https://rpc.casper.network';
 const data = JSON.stringify({
   jsonrpc: '2.0',
   method: 'eth_blockNumber',

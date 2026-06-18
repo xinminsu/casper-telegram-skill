@@ -1,5 +1,5 @@
 import { Skill, SkillMetadata } from './types';
-import { SlashCommandBuilder, ChatInputCommandInteraction, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js';
+import { Context } from 'telegraf';
 
 /**
  * Abstract Base Skill
@@ -12,7 +12,7 @@ export abstract class BaseSkill implements Skill {
   public readonly version: string;
   public readonly description: string;
   public readonly author?: string;
-  public readonly commands: (SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder)[];
+  public readonly commands: string[];
   
   protected initialized: boolean = false;
   
@@ -21,7 +21,7 @@ export abstract class BaseSkill implements Skill {
     version: string;
     description: string;
     author?: string;
-    commands: (SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder)[];
+    commands: string[];
   }) {
     this.name = options.name;
     this.version = options.version;
@@ -47,7 +47,7 @@ export abstract class BaseSkill implements Skill {
    * Handle command interaction
    * Must be implemented by concrete skill classes
    */
-  abstract handleCommand(interaction: ChatInputCommandInteraction): Promise<void>;
+  abstract handleCommand(ctx: Context): Promise<void>;
   
   /**
    * Destroy the skill
@@ -72,7 +72,7 @@ export abstract class BaseSkill implements Skill {
       version: this.version,
       description: this.description,
       author: this.author,
-      commands: this.commands.map(cmd => cmd.name),
+      commands: this.commands,
       enabled: this.initialized,
     };
   }

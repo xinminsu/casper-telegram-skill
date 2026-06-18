@@ -14,7 +14,7 @@ The provided address was **invalid** - it only had 41 characters instead of the 
 
 ### Address Format Requirements
 
-Ethereum/Pharos wallet addresses must be:
+Ethereum/Casper wallet addresses must be:
 - **Exactly 42 characters long**
 - Start with `0x`
 - Followed by 40 hexadecimal characters (0-9, a-f, A-F)

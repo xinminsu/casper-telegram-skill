@@ -4,7 +4,7 @@
 
 ## Overview
 
-Successfully restructured all project documentation to present Pharos Discord Bot as a **new, modern Skill-based architecture** project. All references to "migration", "refactoring", or "legacy code" have been removed.
+Successfully restructured all project documentation to present Casper Discord Bot as a **new, modern Skill-based architecture** project. All references to "migration", "refactoring", or "legacy code" have been removed.
 
 ---
 
@@ -28,7 +28,7 @@ Removed the following files that contained migration/refactoring terminology:
 #### 1. README.md
 **Changes:**
 - Removed multi-chain references (Ethereum, Polygon, BSC)
-- Updated to Pharos-only blockchain focus
+- Updated to Casper-only blockchain focus
 - Added Architecture section explaining Skill-based design
 - Removed references to old handlers directory structure
 - Updated command examples (removed network parameter)
@@ -37,19 +37,19 @@ Removed the following files that contained migration/refactoring terminology:
 **Key Sections:**
 - Features overview
 - Quick start guide
-- Command usage (Pharos-specific)
+- Command usage (Casper-specific)
 - Project structure (Skill-based)
 - Tech stack
-- Configuration (Pharos RPC only)
+- Configuration (Casper RPC only)
 - Development guide (creating skills)
 
 #### 2. QUICKSTART.md
 **Changes:**
-- Updated environment variables (PHAROS_RPC_URL only)
+- Updated environment variables (CASPER_RPC_URL only)
 - Removed multi-chain RPC examples
 - Simplified command examples
 - Fixed formatting issues
-- Updated FAQ to reflect Pharos-only setup
+- Updated FAQ to reflect Casper-only setup
 
 **Key Sections:**
 - 5-minute setup guide

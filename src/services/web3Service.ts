@@ -6,29 +6,29 @@ dotenv.config();
 
 // RPC URL configuration
 const rpcUrls = {
-  pharos: process.env.PHAROS_RPC_URL || 'https://rpc.pharos.network',
+  casper: process.env.CASPER_RPC_URL || 'https://rpc.casper.network',
 };
 
-// Pharos network configuration
-const pharosChainId = parseInt(process.env.PHAROS_CHAIN_ID || '1672');
-const pharosNetwork = {
-  chainId: pharosChainId,
-  name: 'pharos',
+// Casper network configuration
+const casperChainId = parseInt(process.env.CASPER_CHAIN_ID || '1');
+const casperNetwork = {
+  chainId: casperChainId,
+  name: 'casper',
 };
 
-console.log('[Web3Service] Initializing Pharos provider with URL:', rpcUrls.pharos);
-console.log('[Web3Service] Chain ID:', pharosChainId);
+console.log('[Web3Service] Initializing Casper provider with URL:', rpcUrls.casper);
+console.log('[Web3Service] Chain ID:', casperChainId);
 
 // Create Provider instances with explicit network configuration
 export const providers = {
-  pharos: new ethers.JsonRpcProvider(rpcUrls.pharos, pharosNetwork, {
+  casper: new ethers.JsonRpcProvider(rpcUrls.casper, casperNetwork, {
     staticNetwork: true,
     batchMaxCount: 1,
   }),
 };
 
-// Default to Pharos
-export const defaultProvider = providers.pharos;
+// Default to Casper
+export const defaultProvider = providers.casper;
 
 /**
  * Helper function to add timeout to promises
@@ -43,7 +43,7 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number = 10000): Promise
 /**
  * Get Provider for specified network
  */
-export function getProvider(network: string = 'pharos'): ethers.JsonRpcProvider {
+export function getProvider(network: string = 'casper'): ethers.JsonRpcProvider {
   const provider = providers[network as keyof typeof providers];
   if (!provider) {
     throw new Error(`Unsupported network: ${network}`);
@@ -54,7 +54,7 @@ export function getProvider(network: string = 'pharos'): ethers.JsonRpcProvider 
 /**
  * Query address ETH balance
  */
-export async function getEthBalance(address: string, network: string = 'pharos'): Promise<string> {
+export async function getEthBalance(address: string, network: string = 'casper'): Promise<string> {
   try {
     const provider = getProvider(network);
     
@@ -80,15 +80,15 @@ export async function getEthBalance(address: string, network: string = 'pharos')
     logger.error(`Balance query error: ${errorMessage} | Stack: ${error instanceof Error ? error.stack : 'N/A'}`);
     
     if (errorMessage === 'RPC_REQUEST_TIMEOUT') {
-      throw new Error('Request timeout: Pharos RPC node is not responding within 20 seconds');
+      throw new Error('Request timeout: Casper RPC node is not responding within 20 seconds');
     }
     
     // Check for common RPC errors
     if (errorMessage.includes('ECONNREFUSED')) {
-      throw new Error('Connection refused: Cannot connect to Pharos RPC node');
+      throw new Error('Connection refused: Cannot connect to Casper RPC node');
     }
     if (errorMessage.includes('ENOTFOUND')) {
-      throw new Error('DNS error: Pharos RPC URL not found');
+      throw new Error('DNS error: Casper RPC URL not found');
     }
     if (errorMessage.includes('403') || errorMessage.includes('401')) {
       throw new Error('Access denied: RPC endpoint requires authentication or API key');
@@ -107,7 +107,7 @@ export async function getEthBalance(address: string, network: string = 'pharos')
 export async function getTokenBalance(
   tokenAddress: string,
   walletAddress: string,
-  network: string = 'pharos'
+  network: string = 'casper'
 ): Promise<string> {
   const provider = getProvider(network);
   
@@ -142,7 +142,7 @@ export async function estimateGas(
   to: string,
   value: string = '0',
   data: string = '0x',
-  network: string = 'pharos'
+  network: string = 'casper'
 ): Promise<{
   gasLimit: string;
   gasPrice: string;
@@ -216,7 +216,7 @@ export async function estimateGas(
 /**
  * Get current Gas price
  */
-export async function getCurrentGasPrice(network: string = 'pharos'): Promise<{
+export async function getCurrentGasPrice(network: string = 'casper'): Promise<{
   gasPrice: string;
   maxFeePerGas: string;
   maxPriorityFeePerGas: string;
@@ -238,7 +238,7 @@ export async function sendTransaction(
   privateKey: string,
   to: string,
   value: string,
-  network: string = 'pharos'
+  network: string = 'casper'
 ): Promise<string> {
   const provider = getProvider(network);
   const wallet = new ethers.Wallet(privateKey, provider);

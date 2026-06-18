@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, SlashCommandOptionsOnlyBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js';
+import { Context } from 'telegraf';
 
 /**
  * Skill Interface
@@ -18,8 +18,8 @@ export interface Skill {
   /** Author or maintainer */
   author?: string;
   
-  /** Discord slash commands provided by this skill */
-  commands: (SlashCommandBuilder | SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder)[];
+  /** Telegram commands provided by this skill */
+  commands: string[];
   
   /**
    * Initialize the skill
@@ -29,9 +29,9 @@ export interface Skill {
   
   /**
    * Handle command interaction
-   * @param interaction - The Discord command interaction
+   * @param ctx - The Telegram context
    */
-  handleCommand(interaction: ChatInputCommandInteraction): Promise<void>;
+  handleCommand(ctx: Context): Promise<void>;
   
   /**
    * Cleanup and destroy the skill

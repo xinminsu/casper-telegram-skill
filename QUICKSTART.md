@@ -1,30 +1,16 @@
-# Pharos Discord Bot Quick Start Guide
+# Casper Telegram Bot Quick Start Guide
 
 ## 🚀 5-Minute Quick Start
 
-### Step 1: Create Discord Bot
+### Step 1: Create Telegram Bot
 
-1. Visit [Discord Developer Portal](https://discord.com/developers/applications)
-2. Click "New Application" and enter application name (e.g., "Pharos Bot")
-3. Select "Bot" from the left menu
-4. Click "Add Bot" → "Yes, do it!"
-5. In the "Token" section, click "Reset Token" → "Copy" and save this Token
+1. Open Telegram and search for @BotFather
+2. Send the command `/newbot`
+3. Follow the prompts to set your bot name (e.g., "Casper Bot")
+4. Set a username for your bot (must end with 'bot', e.g., "casper_helper_bot")
+5. Copy the Bot Token that BotFather provides
 
-### Step 2: Get Client ID
-
-1. Select "OAuth2" → "General" from the left menu
-2. Copy "Client ID"
-
-### Step 3: Invite Bot to Your Server
-
-Use the following link (replace YOUR_CLIENT_ID):
-```
-https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&permissions=8&scope=bot%20applications.commands
-```
-
-Select your server and authorize.
-
-### Step 4: Configure Project
+### Step 2: Configure Project
 
 1. **Copy environment variables file**
 ```bash
@@ -33,15 +19,14 @@ cp .env.example .env
 
 2. **Edit .env file**
 ```env
-DISCORD_TOKEN=Your_Bot_Token
-DISCORD_CLIENT_ID=Your_Client_ID
+TELEGRAM_BOT_TOKEN=Your_Bot_Token_From_BotFather
 
-# Pharos RPC Configuration
-PHAROS_RPC_URL=https://rpc.pharos.network
-PHAROS_CHAIN_ID=1
+# Casper RPC Configuration
+CASPER_RPC_URL=https://rpc.casper.network
+CASPER_CHAIN_ID=1
 ```
 
-### Step 5: Install and Run
+### Step 3: Install and Run
 
 ```bash
 # Install dependencies
@@ -51,29 +36,30 @@ npm install
 npm run dev
 ```
 
-When you see "Pharos Bot is online!", it means success!
+When you see "Casper Telegram Bot is online!", it means success!
 
 ## 📱 Test Commands
 
-Enter these commands in Discord:
-
+Start a chat with your bot in Telegram and use these commands:
 
 ```
-/balance address:0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
+/start
+/help
+/balance 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
 /gas-price
-/gas-estimate from:0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb to:0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
+/gas-estimate 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 ```
 
 ## 🔧 FAQ
 
-**Q: Commands not showing up?**  
-A: Wait a few minutes for Discord to sync commands, or re-invite the Bot.
+**Q: Commands not working?**  
+A: Make sure you're using the correct command format. Use `/help` to see available commands.
 
 **Q: Getting "Invalid wallet address" error?**  
 A: Make sure the address format is correct, starts with 0x and is 42 characters long.
 
 **Q: Query failed?**  
-A: Check if the Pharos RPC URL is available and accessible.
+A: Check if the Casper RPC URL is available and accessible.
 
 **Q: How to stop the Bot?**  
 A: Press `Ctrl + C` in the terminal
@@ -88,7 +74,7 @@ npm run build
 
 # Use PM2 to manage process
 npm install -g pm2
-pm2 start dist/index.js --name pharos-bot
+pm2 start dist/index.js --name casper-bot
 pm2 save
 pm2 startup
 ```
@@ -97,13 +83,15 @@ pm2 startup
 
 | Command | Description | Example |
 |------|------|------|
-| `/balance` | Query balance | `/balance address:0x...` |
+| `/start` | Start the bot | `/start` |
+| `/help` | Show help | `/help` |
+| `/balance` | Query balance | `/balance 0x...` |
 | `/gas-price` | Query Gas price | `/gas-price` |
-| `/gas-estimate` | Estimate Gas | `/gas-estimate from:0x... to:0x...` |
-| `/alert add` | Add alert | `/alert add type:balance address:0x...` |
-| `/alert list` | List alerts | `/alert list` |
-| `/alert remove` | Remove alert | `/alert remove id:alert_xxx` |
-| `/push` | Push message | `/push message:"Notification content"` |
+| `/gas-estimate` | Estimate Gas | `/gas-estimate 0x... 0x...` |
+| `/alert-add` | Add alert | `/alert-add balance 0x...` |
+| `/alert-list` | List alerts | `/alert-list` |
+| `/alert-remove` | Remove alert | `/alert-remove alert_xxx` |
+| `/push` | Push message | `/push Notification content` |
 
 ## 🆘 Need Help?
 

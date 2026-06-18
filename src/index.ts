@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Partials } from 'discord.js';
+import { Telegraf } from 'telegraf';
 import dotenv from 'dotenv';
 import { SkillManager } from './core/SkillManager';
 import { BalanceSkill } from './skills/balance';
@@ -9,21 +9,18 @@ import { logger } from './utils/logger';
 
 dotenv.config();
 
-// Create Discord client
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-  ],
-  partials: [Partials.Channel],
-});
+// Create Telegram bot
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN!);
 
 // Create Skill Manager
 const skillManager = new SkillManager();
 
 // Bot ready event
-client.once('ready', async () => {
-  logger.info(`Pharos Bot is online! Username: ${client.user?.tag}`);
-  logger.info(`Currently serving ${client.guilds.cache.size} servers`);
+bot.launch();
+
+// Initialize bot after launch
+(async () => {
+  logger.info('Casper Telegram Bot is online!');
   
   // Initialize Skill Manager
   await skillManager.initialize();
@@ -42,20 +39,15 @@ client.once('ready', async () => {
   
   logger.info(`Registered ${skillManager.getSkillCount()} skills`);
   
-  // Register commands with Discord
-  await registerCommands();
-});
-
-// Handle interaction events
-client.on('interactionCreate', async (interaction) => {
-  if (interaction.isChatInputCommand()) {
-    await skillManager.handleCommand(interaction);
-  }
-});
+  // Setup command handlers
+  setupCommandHandlers();
+  
+  logger.info('Bot is ready to handle commands!');
+})();
 
 // Error handling
-client.on('error', (error) => {
-  logger.error('Discord client error:', error);
+bot.catch((err, ctx) => {
+  logger.error(`Telegram Bot error for ${ctx.updateType}:`, err);
 });
 
 process.on('unhandledRejection', (error: any) => {
@@ -63,67 +55,57 @@ process.on('unhandledRejection', (error: any) => {
 });
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
+const gracefulStop = () => {
   logger.info('Shutting down...');
-  await skillManager.shutdown();
-  client.destroy();
-  process.exit(0);
-});
+  skillManager.shutdown().then(() => {
+    bot.stop('SIGINT');
+    process.exit(0);
+  });
+};
 
-process.on('SIGTERM', async () => {
-  logger.info('Shutting down...');
-  await skillManager.shutdown();
-  client.destroy();
-  process.exit(0);
-});
-
-// Start the bot
-const TOKEN = process.env.DISCORD_TOKEN;
-
-if (!TOKEN) {
-  logger.error('Error: DISCORD_TOKEN not configured in .env file');
-  process.exit(1);
-}
+process.on('SIGINT', gracefulStop);
+process.on('SIGTERM', gracefulStop);
 
 /**
- * Register commands with Discord API
+ * Setup command handlers for Telegram
  */
-async function registerCommands() {
-  try {
-    const { REST, Routes } = await import('discord.js');
-    const rest = new REST({ version: '10' }).setToken(TOKEN!);
-    const CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-    
-    if (!CLIENT_ID) {
-      throw new Error('DISCORD_CLIENT_ID not configured');
+function setupCommandHandlers() {
+  // Collect all commands from skills
+  const allSkills = skillManager.getAllSkills();
+  const allCommands = allSkills.flatMap(skill => skill.commands);
+  
+  logger.info(`Setting up ${allCommands.length} commands...`);
+  
+  // Register each command
+  for (const skill of allSkills) {
+    for (const commandName of skill.commands) {
+      bot.command(commandName, async (ctx) => {
+        await skillManager.handleCommand(ctx, commandName);
+      });
     }
-    
-    // Collect all commands from skills
-    const allSkills = skillManager.getAllSkills();
-    const commands = allSkills.flatMap(skill => skill.commands);
-    
-    logger.info(`Registering ${commands.length} commands...`);
-    
-    const data = await rest.put(
-      Routes.applicationCommands(CLIENT_ID),
-      { body: commands.map(cmd => cmd.toJSON()) }
-    );
-    
-    logger.info(`Successfully registered ${(data as any[]).length} commands`);
-  } catch (error) {
-    logger.error('Command registration failed:', error);
-    throw error;
   }
+  
+  // Help command
+  bot.command('help', (ctx) => {
+    const helpText = allSkills.map(skill => {
+      const cmds = skill.commands.map(cmd => `/${cmd}`).join(', ');
+      return `*${skill.name}* (${skill.version}):\n${skill.description}\nCommands: ${cmds}`;
+    }).join('\n\n');
+    
+    ctx.reply(
+      `🤖 Casper Telegram Bot\n\nAvailable Skills:\n\n${helpText}`,
+      { parse_mode: 'Markdown' }
+    );
+  });
+  
+  // Start command
+  bot.start((ctx) => {
+    ctx.reply(
+      '👋 Welcome to Casper Telegram Bot!\n\n' +
+      'Use /help to see available commands.\n' +
+      'This bot provides blockchain services for Casper network.'
+    );
+  });
 }
 
-// Login to Discord
-client.login(TOKEN)
-  .then(() => {
-    logger.info('Pharos Bot logged in successfully!');
-  })
-  .catch((error: any) => {
-    logger.error('Login failed:', error);
-    process.exit(1);
-  });
-
-export { client, skillManager };
+export { bot, skillManager };

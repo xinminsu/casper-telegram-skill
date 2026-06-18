@@ -1,8 +1,8 @@
-# Pharos Discord Bot - Architecture Documentation
+# Casper Telegram Bot - Architecture Documentation
 
 ## Overview
 
-Pharos Discord Bot is built using a modern **Skill-based architecture** that provides modularity, extensibility, and maintainability. Each feature is implemented as an independent skill module managed by a central SkillManager.
+Casper Telegram Bot is built using a modern **Skill-based architecture** that provides modularity, extensibility, and maintainability. Each feature is implemented as an independent skill module managed by a central SkillManager.
 
 ---
 
@@ -12,7 +12,7 @@ Pharos Discord Bot is built using a modern **Skill-based architecture** that pro
 
 ```
 ┌─────────────────────────────────────┐
-│       Discord Bot Core              │
+│       Telegram Bot Core             │
 │  - Event Loop                       │
 │  - Command Router                   │
 │  - Error Handler                    │
@@ -141,7 +141,7 @@ src/skills/{skill-name}/
 ### Available Skills
 
 #### 1. Balance Skill (`src/skills/balance/`)
-**Purpose**: Query wallet balances on Pharos network
+**Purpose**: Query wallet balances on Casper network
 
 **Commands:**
 - `/balance` - Query ETH or token balance
@@ -179,13 +179,12 @@ src/skills/{skill-name}/
 - In-memory storage
 
 #### 4. Push Skill (`src/skills/push/`)
-**Purpose**: Push notification messages to channels
+**Purpose**: Push notification messages to chats
 
 **Commands:**
-- `/push` - Send message to channel
+- `/push` - Send message to chat
 
 **Features:**
-- Channel targeting
 - Formatted notifications
 - Logging support
 
@@ -209,8 +208,8 @@ estimateGas(from, to, value): Promise<GasEstimate>
 ```
 
 **Configuration:**
-- Single-chain focus: Pharos network only
-- RPC URL from environment: `PHAROS_RPC_URL`
+- Single-chain focus: Casper network only
+- RPC URL from environment: `CASPER_RPC_URL`
 - ethers.js v6 for blockchain interactions
 
 ### Logger (`src/utils/logger.ts`)
@@ -237,10 +236,10 @@ Winston-based logging system.
 User enters /balance command
          │
          ▼
-Discord sends interaction to bot
+Telegram sends message to bot
          │
          ▼
-Bot receives interaction event
+Bot receives message event
          │
          ▼
 SkillManager.handleCommand() called
@@ -258,7 +257,7 @@ Handler validates input
 Web3Service queries blockchain
          │
          ▼
-Response sent to Discord
+Response sent to Telegram
 ```
 
 ### Alert Monitoring Flow
@@ -286,13 +285,12 @@ For each alert:
 ### Environment Variables
 
 ```env
-# Discord Configuration
-DISCORD_TOKEN=your_bot_token
-DISCORD_CLIENT_ID=your_client_id
+# Telegram Configuration
+TELEGRAM_BOT_TOKEN=your_bot_token
 
-# Pharos Blockchain Configuration
-PHAROS_RPC_URL=https://rpc.pharos.network
-PHAROS_CHAIN_ID=1
+# Casper Blockchain Configuration
+CASPER_RPC_URL=https://rpc.casper.network
+CASPER_CHAIN_ID=1
 
 # Application Configuration
 LOG_LEVEL=info
@@ -413,7 +411,7 @@ Test component interactions:
 
 Current testing approach:
 1. Run bot in development mode
-2. Test commands in Discord
+2. Test commands in Telegram
 3. Monitor logs for errors
 4. Verify blockchain interactions
 
@@ -449,7 +447,7 @@ Current testing approach:
 ### Recommendations
 
 - Use `.gitignore` to exclude `.env` file
-- Rotate Discord tokens regularly
+- Rotate Telegram bot tokens regularly
 - Use secure RPC endpoints (HTTPS)
 - Monitor logs for suspicious activity
 
@@ -467,7 +465,7 @@ npm run dev
 
 ```bash
 npm run build
-pm2 start dist/index.js --name pharos-bot
+pm2 start dist/index.js --name casper-bot
 pm2 save
 ```
 
@@ -503,7 +501,7 @@ pm2 save
 ### v2.0.0 (Current)
 - Skill-based architecture
 - Modular design
-- Pharos-only blockchain support
+- Casper-only blockchain support
 - Complete English localization
 
 ### v1.0.0 (Legacy)
@@ -555,6 +553,6 @@ pm2 save
 
 ---
 
-**Last Updated**: 2026-06-16  
+**Last Updated**: 2026-06-18  
 **Version**: 2.0.0  
 **Architecture**: Skill-Based

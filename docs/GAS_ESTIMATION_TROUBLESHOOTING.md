@@ -34,7 +34,7 @@ Some smart contracts don't accept direct ETH transfers and will reject transacti
 The destination address might be:
 - A burn address (e.g., `0x0000000000000000000000000000000000000000`)
 - An address with restrictions
-- Not deployed on Pharos network
+- Not deployed on Casper network
 
 ### 2. Insufficient Balance
 
@@ -47,7 +47,7 @@ Insufficient balance: has 0.5 ETH, needs 1.0 ETH
 
 ### 3. Network-Specific Restrictions
 
-Pharos network may have specific rules that prevent certain transactions.
+Casper network may have specific rules that prevent certain transactions.
 
 ---
 
@@ -131,7 +131,7 @@ Use these well-known addresses for testing:
 From: 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045
 To: 0x742d35cC6634c0532925A3b844bc9E7595F0beB1
 Amount: 0.1 ETH
-Network: Pharos
+Network: Casper
 
 Gas Limit: 21000
 Gas Price: 10.5 Gwei

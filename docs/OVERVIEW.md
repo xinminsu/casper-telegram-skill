@@ -1,12 +1,12 @@
 # Project Overview
 
-Welcome to **Pharos Discord Bot** - a modern, skill-based Discord bot for blockchain interactions on the Pharos network.
+Welcome to **Casper Telegram Bot** - a modern, skill-based Telegram bot for blockchain interactions on the Casper network.
 
 ---
 
 ## 🎯 What is This?
 
-Pharos Discord Bot allows you to interact with the Pharos blockchain directly from Discord using simple slash commands. Query balances, check gas prices, set up alerts, and push notifications - all without leaving Discord.
+Casper Telegram Bot allows you to interact with the Casper blockchain directly from Telegram using simple commands. Query balances, check gas prices, set up alerts, and push notifications - all without leaving Telegram.
 
 ---
 
@@ -15,7 +15,7 @@ Pharos Discord Bot allows you to interact with the Pharos blockchain directly fr
 ### 📊 Balance Queries
 - Check ETH balances for any wallet
 - Query ERC20 token balances
-- Real-time data from Pharos network
+- Real-time data from Casper network
 
 ### ⛽ Gas Information
 - Current gas prices
@@ -28,9 +28,8 @@ Pharos Discord Bot allows you to interact with the Pharos blockchain directly fr
 - Custom scheduled messages
 
 ### 📢 Notifications
-- Push messages to channels
+- Push messages to chats
 - Formatted announcements
-- Channel targeting
 
 ---
 
@@ -74,7 +73,7 @@ src/
 ### Prerequisites
 - Node.js >= 18.x
 - Discord Bot Token
-- Pharos RPC URL
+- Casper RPC URL
 
 ### Installation
 
@@ -102,13 +101,15 @@ See [QUICKSTART.md](../QUICKSTART.md) for detailed instructions.
 
 | Command | Description |
 |---------|-------------|
+| `/start` | Start the bot |
+| `/help` | Show help information |
 | `/balance` | Query wallet balance |
 | `/gas-price` | Check current gas prices |
 | `/gas-estimate` | Estimate transaction fees |
-| `/alert add` | Create new alert |
-| `/alert list` | View active alerts |
-| `/alert remove` | Delete an alert |
-| `/push` | Send message to channel |
+| `/alert-add` | Create new alert |
+| `/alert-list` | View active alerts |
+| `/alert-remove` | Delete an alert |
+| `/push` | Send message to chat |
 
 See [docs/SKILLS.md](SKILLS.md) for complete command reference.
 
@@ -117,7 +118,7 @@ See [docs/SKILLS.md](SKILLS.md) for complete command reference.
 ## 🔧 Technology Stack
 
 - **TypeScript**: Type-safe JavaScript
-- **discord.js v14**: Discord bot framework
+- **telegraf v4**: Telegram bot framework
 - **ethers.js v6**: Blockchain interaction library
 - **winston**: Logging system
 - **node-cron**: Scheduled tasks
@@ -154,14 +155,14 @@ See [docs/SKILL_DEVELOPMENT.md](SKILL_DEVELOPMENT.md) for complete guide.
 
 ## 🌐 Blockchain Support
 
-**Current Network**: Pharos only
+**Current Network**: Casper only
 
-This bot is specifically designed for the Pharos blockchain network. All queries and transactions are executed on Pharos.
+This bot is specifically designed for the Casper blockchain network. All queries and transactions are executed on Casper.
 
 **Configuration:**
 ```env
-PHAROS_RPC_URL=https://rpc.pharos.network
-PHAROS_CHAIN_ID=1
+CASPER_RPC_URL=https://rpc.casper.network
+CASPER_CHAIN_ID=1
 ```
 
 ---
@@ -222,7 +223,7 @@ We welcome contributions!
 - Re-invite the bot with proper permissions
 
 **Query failed?**
-- Check your PHAROS_RPC_URL is accessible
+- Check your CASPER_RPC_URL is accessible
 - Verify wallet address format (0x...)
 
 **Bot offline?**
@@ -248,7 +249,7 @@ MIT License - Feel free to use and modify!
 
 **Version**: 2.0.0  
 **Architecture**: Skill-Based  
-**Network**: Pharos  
-**Last Updated**: 2026-06-16
+**Network**: Casper  
+**Last Updated**: 2026-06-18
 
 Happy coding! 🚀

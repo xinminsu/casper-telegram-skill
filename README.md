@@ -1,13 +1,13 @@
-# Pharos Discord Bot
+# Casper Telegram Bot
 
-A powerful Discord Bot built with Skill-based architecture for blockchain queries, transaction execution, gas estimation, and event notifications on the Pharos network.
+A powerful Telegram Bot built with Skill-based architecture for blockchain queries, transaction execution, gas estimation, and event notifications on the Casper network.
 
 ## ✨ Features
 
 ### 📊 Balance Query
 - Query ETH balance for any wallet address
 - Query ERC20 token balances
-- Real-time blockchain data from Pharos network
+- Real-time blockchain data from Casper network
 
 ### ⛽ Gas Related
 - Real-time gas price queries
@@ -21,7 +21,7 @@ A powerful Discord Bot built with Skill-based architecture for blockchain querie
 - Manage alert lists (add, view, delete)
 
 ### 📢 Message Push
-- Push notification messages to specified channels
+- Push notification messages to chats
 - Support custom message content
 
 ## 🏗️ Architecture
@@ -72,9 +72,9 @@ Edit the `.env` file and fill in your configuration:
 DISCORD_TOKEN=your_discord_bot_token_here
 DISCORD_CLIENT_ID=your_client_id_here
 
-# Pharos Blockchain Configuration
-PHAROS_RPC_URL=https://rpc.pharos.network
-PHAROS_CHAIN_ID=1
+# Casper Blockchain Configuration
+CASPER_RPC_URL=https://rpc.casper.network
+CASPER_CHAIN_ID=1
 
 # Logging
 LOG_LEVEL=info
@@ -99,7 +99,7 @@ npm start
 
 ### `/balance` - Query Balance
 
-Query wallet ETH or token balance on Pharos network.
+Query wallet ETH or token balance on Casper network.
 
 **Parameters:**
 - `address` (required): Wallet address
@@ -113,7 +113,7 @@ Query wallet ETH or token balance on Pharos network.
 
 ### `/gas-price` - Query Gas Price
 
-View current Pharos network gas price information.
+View current Casper network gas price information.
 
 **Example:**
 ```
@@ -122,7 +122,7 @@ View current Pharos network gas price information.
 
 ### `/gas-estimate` - Estimate Gas Fees
 
-Estimate gas fees required for a transaction on Pharos.
+Estimate gas fees required for a transaction on Casper.
 
 **Parameters:**
 - `from` (required): Sender address
@@ -169,21 +169,20 @@ Set up and manage blockchain event notifications.
 
 ### `/push` - Push Message
 
-Push notification messages to channels.
+Push notification messages to chats.
 
 **Parameters:**
 - `message` (required): Message content to push
-- `channel` (optional): Target channel, default current channel
 
 **Example:**
 ```
-/push message:"Important Notice: System maintenance scheduled tonight"
+/push Important Notice: System maintenance scheduled tonight
 ```
 
 ## 🏗️ Project Structure
 
 ```
-pharos-discord-skill/
+casper-telegram-skill/
 ├── src/
 │   ├── core/               # Core framework
 │   │   └── SkillManager.ts # Skill lifecycle manager
@@ -220,8 +219,8 @@ pharos-discord-skill/
 
 ### Blockchain Configuration
 
-- `PHAROS_RPC_URL`: Pharos network RPC node
-- `PHAROS_CHAIN_ID`: Pharos chain ID (default 1)
+- `CASPER_RPC_URL`: Casper network RPC node
+- `CASPER_CHAIN_ID`: Casper chain ID (default 1)
 
 ### Other Configuration
 
@@ -264,7 +263,7 @@ Log files are saved in `logs/` directory:
    - Production should use databases (e.g., MongoDB, PostgreSQL)
 
 4. **Rate Limiting**: 
-   - Discord API has rate limits, control request frequency
+   - Telegram API has rate limits, control request frequency
    - RPC nodes may also have request limits
 
 ## 🤝 Contributing
@@ -281,4 +280,4 @@ For questions or suggestions, please submit an Issue.
 
 ---
 
-**Pharos Discord Bot** - Making blockchain interactions simpler 🚀
+**Casper Telegram Bot** - Making blockchain interactions simpler 🚀
