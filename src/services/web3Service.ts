@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import dotenv from 'dotenv';
+import { CasperAddressUtils } from '../utils/casperAddress';
 
 // Load environment variables first
 dotenv.config();
@@ -53,13 +54,35 @@ export function getProvider(network: string = 'casper'): ethers.JsonRpcProvider 
 
 /**
  * Query address ETH balance
+ * Supports Ethereum-style (0x...), Casper account hash, and public key formats
  */
 export async function getEthBalance(address: string, network: string = 'casper'): Promise<string> {
   try {
     const provider = getProvider(network);
     
-    logger.info(`Querying balance for ${address} on ${network}`);
+    // Normalize address to Casper format if needed
+    let normalizedAddress = address;
+    const addressType = CasperAddressUtils.getAddressType(address);
+    
+    logger.info(`Querying balance for ${address} (${addressType}) on ${network}`);
     logger.info(`Provider URL: ${provider._getConnection().url}`);
+    
+    // For now, ethers.js can work with 0x addresses directly
+    // In future, we may need to convert to native Casper format for RPC calls
+    if (addressType === 'ethereum') {
+      normalizedAddress = address; // Keep as-is for ethers.js
+    } else if (addressType === 'account-hash' || addressType === 'public-key') {
+      // Convert to Ethereum-style for compatibility with current RPC setup
+      try {
+        normalizedAddress = CasperAddressUtils.accountHashToEth(
+          addressType === 'public-key' ? CasperAddressUtils.normalizeAddress(address) : address
+        );
+        logger.info(`Converted ${addressType} to Ethereum format: ${normalizedAddress}`);
+      } catch (error) {
+        logger.warn(`Could not convert Casper address, using original: ${error instanceof Error ? error.message : 'Unknown'}`);
+        normalizedAddress = address;
+      }
+    }
     
     // Set a timeout for the request
     const timeoutPromise = new Promise((_, reject) => {
@@ -67,7 +90,7 @@ export async function getEthBalance(address: string, network: string = 'casper')
     });
     
     logger.info('Calling provider.getBalance()...');
-    const balancePromise = provider.getBalance(address);
+    const balancePromise = provider.getBalance(normalizedAddress);
     
     // Race between the balance query and timeout
     const balance = await Promise.race([balancePromise, timeoutPromise]) as bigint;
@@ -262,5 +285,6 @@ export async function sendTransaction(
 // Note: In production, do not import logger directly, should use dependency injection
 const logger = {
   info: (msg: string) => console.log(`[INFO] ${msg}`),
+  warn: (msg: string) => console.warn(`[WARN] ${msg}`),
   error: (msg: string) => console.error(`[ERROR] ${msg}`),
 };

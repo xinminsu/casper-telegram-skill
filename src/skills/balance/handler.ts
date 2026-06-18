@@ -1,6 +1,7 @@
 import { Context } from 'telegraf';
 import { ethers } from 'ethers';
 import { getEthBalance, getTokenBalance } from '../../services/web3Service';
+import { CasperAddressUtils } from '../../utils/casperAddress';
 import { logger } from '../../utils/logger';
 
 export async function handleBalanceCommand(ctx: Context) {
@@ -9,59 +10,77 @@ export async function handleBalanceCommand(ctx: Context) {
   const args = text.split(' ').slice(1); // Remove command name
   
   if (args.length < 1) {
-    await ctx.reply('❌ Usage: /balance <address> [token_address]');
+    await ctx.reply(
+      '❌ Usage: /balance <address> [token_address]\n\n' +
+      'Supported address formats:\n' +
+      '• Ethereum-style: 0x...\n' +
+      '• Casper account hash: account-hash-...\n' +
+      '• Casper public key: 02/03... (66 chars)'
+    );
     return;
   }
 
   const address = args[0];
   const token = args[1];
 
-  // Validate address format
-  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
-    const length = address.length;
-    const expectedLength = 42;
+  // Detect and validate address format
+  const addressType = CasperAddressUtils.getAddressType(address);
+  
+  if (addressType === 'unknown') {
     await ctx.reply(
-      `❌ Invalid wallet address format\n\n` +
-      `Expected: 42 characters (0x + 40 hex chars)\n` +
-      `Received: ${length} characters\n\n` +
-      `Example: 0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1`
+      `❌ Invalid address format: ${address}\n\n` +
+      `Supported formats:\n` +
+      `• Ethereum-style: 0x followed by 40 hex chars\n` +
+      `• Casper account hash: account-hash-...\n` +
+      `• Casper public key: 02/03 followed by 64 hex chars`
     );
     return;
   }
 
   try {
-    // Convert addresses to checksum format to avoid checksum errors
-    const checksumAddress = ethers.getAddress(address.toLowerCase());
+    // Normalize address for blockchain queries
+    const normalizedAddress = CasperAddressUtils.normalizeAddress(address);
     
     let balanceInfo: string;
     let title: string;
 
     if (token) {
       // Query ERC20 token balance
-      if (!/^0x[a-fA-F0-9]{40}$/.test(token)) {
-        await ctx.reply('❌ Invalid token contract address format. Must be 42 characters (0x + 40 hex chars)');
+      if (!CasperAddressUtils.isEthereumStyle(token) && 
+          !CasperAddressUtils.isAccountHash(token) && 
+          !CasperAddressUtils.isPublicKeyHex(token)) {
+        await ctx.reply('❌ Invalid token contract address format');
         return;
       }
       
-      // Convert token address to checksum format
-      const checksumToken = ethers.getAddress(token.toLowerCase());
-      balanceInfo = await getTokenBalance(checksumToken, checksumAddress);
+      // Convert token address to normalized format
+      const normalizedToken = CasperAddressUtils.normalizeAddress(token);
+      balanceInfo = await getTokenBalance(normalizedToken, normalizedAddress);
       title = `💰 Casper Token Balance`;
     } else {
       // Query ETH balance
-      balanceInfo = await getEthBalance(checksumAddress);
-      title = `💰 Casper ETH Balance`;
+      balanceInfo = await getEthBalance(normalizedAddress);
+      title = `💰 Casper Balance`;
     }
 
-    const response = 
-      `${title}\n\n` +
-      `*Wallet Address:* \`${checksumAddress}\`\n` +
-      `*Balance:* \`${balanceInfo}\`\n` +
-      `*Network:* Casper`;
+    // Build response with address format information
+    let response = `${title}\n\n`;
+    
+    // Show original address and type
+    response += `*Original Address:* \`${address}\`\n`;
+    response += `*Address Type:* ${addressType}\n\n`;
+    
+    // Show converted formats if different
+    if (addressType !== 'account-hash') {
+      response += `*Casper Account Hash:* \`${normalizedAddress}\`\n\n`;
+    }
+    
+    response += `*Balance:* \`${balanceInfo}\`\n`;
+    response += `*Network:* Casper`;
 
     await ctx.reply(response, { parse_mode: 'Markdown' });
 
-    logger.info(`Query balance: ${checksumAddress} on Casper`);
+    logger.info(`Query balance: ${address} (${addressType}) on Casper`);
   } catch (error) {
     logger.error('Balance query failed:', error);
     await ctx.reply(`❌ Query failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
