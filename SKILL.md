@@ -28,7 +28,7 @@ src/
 │   ├── BaseSkill.ts         # Abstract base class all skills extend
 │   ├── SkillRegistry.ts     # In-memory Map-based skill registry
 │   ├── index.ts             # Re-exports types, BaseSkill, SkillRegistry
-│   ├── balance/             # ETH & ERC20 balance query skill
+│   ├── balance/             # CSPR & ERC20 balance query skill
 │   ├── gas/                 # Gas price & gas estimation skill
 │   ├── alert/               # Balance/gas/custom alert monitoring skill
 │   └── push/                # Message push to Telegram chats skill

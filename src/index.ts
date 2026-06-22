@@ -5,6 +5,21 @@ import { BalanceSkill } from './skills/balance';
 import { GasSkill } from './skills/gas';
 import { AlertSkill } from './skills/alert';
 import { PushSkill } from './skills/push';
+import { NetworkSkill } from './skills/network';
+import {
+  AccountReadSkill,
+  ContractReadSkill,
+  TokenReadSkill,
+  StakingReadSkill,
+  DappReadSkill,
+} from './skills/read';
+import {
+  NativeWriteSkill,
+  TokenWriteSkill,
+  NftWriteSkill,
+  StakingWriteSkill,
+  DefiWriteSkill,
+} from './skills/write';
 import { logger } from './utils/logger';
 
 dotenv.config();
@@ -31,6 +46,19 @@ bot.launch();
     new GasSkill(),
     new AlertSkill(),
     new PushSkill(),
+    new NetworkSkill(),
+    // Read skills
+    new AccountReadSkill(),
+    new ContractReadSkill(),
+    new TokenReadSkill(),
+    new StakingReadSkill(),
+    new DappReadSkill(),
+    // Write skills
+    new NativeWriteSkill(),
+    new TokenWriteSkill(),
+    new NftWriteSkill(),
+    new StakingWriteSkill(),
+    new DefiWriteSkill(),
   ];
   
   for (const skill of skills) {

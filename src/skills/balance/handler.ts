@@ -60,7 +60,7 @@ export async function handleBalanceCommand(ctx: Context) {
     } else {
       // Query ETH balance
       balanceInfo = await getEthBalance(normalizedAddress);
-      title = `💰 Casper Balance`;
+      title = `💰 Casper CSPR Balance`;
     }
 
     // Build response with address format information

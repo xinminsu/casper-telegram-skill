@@ -29,7 +29,7 @@ export async function handleGasEstimateCommand(ctx: Context) {
   const args = text.split(' ').slice(1); // Remove command name
   
   if (args.length < 2) {
-    await ctx.reply('❌ Usage: /gas-estimate <from_address> <to_address> [value_in_eth]');
+    await ctx.reply('❌ Usage: /gas-estimate <from_address> <to_address> [value_in_cspr]');
     return;
   }
 
@@ -54,7 +54,7 @@ export async function handleGasEstimateCommand(ctx: Context) {
       `⛽ Gas Estimation Result\n\n` +
       `*From:* \`${from}\`\n` +
       `*To:* \`${to}\`\n` +
-      `*Amount:* ${value} ETH\n` +
+      `*Amount:* ${value} CSPR\n` +
       `*Network:* Casper\n\n` +
       `*Gas Limit:* \`${gasInfo.gasLimit}\`\n` +
       `*Gas Price:* \`${gasInfo.gasPrice}\`\n` +

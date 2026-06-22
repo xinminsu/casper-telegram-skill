@@ -15,7 +15,7 @@ Query wallet balances on the Casper blockchain network.
 ### Commands
 
 #### `/balance`
-Query ETH or token balance for a wallet address.
+Query CSPR or token balance for a wallet address.
 
 **Parameters:**
 - `address` (required): Wallet address to query
@@ -29,9 +29,9 @@ Query ETH or token balance for a wallet address.
 
 **Response Format:**
 ```
-💰 Casper ETH Balance
+💰 Casper CSPR Balance
 ├─ Wallet Address: 0x742d...
-├─ Balance: 12.345 ETH
+├─ Balance: 12.345 CSPR
 └─ Network: Casper
 ```
 
@@ -72,7 +72,7 @@ Estimate gas fees for a transaction.
 **Parameters:**
 - `from` (required): Sender address
 - `to` (required): Receiver address
-- `value` (optional): Transfer amount in ETH (default: 0)
+- `value` (optional): Transfer amount in CSPR (default: 0)
 
 **Example:**
 ```
@@ -84,10 +84,10 @@ Estimate gas fees for a transaction.
 📊 Gas Estimate
 ├─ From: 0xSender...
 ├─ To: 0xReceiver...
-├─ Amount: 0.1 ETH
+├─ Amount: 0.1 CSPR
 ├─ Gas Limit: 21000
-├─ Estimated Fee: 0.00105 ETH
-└─ Total Cost: 0.10105 ETH
+├─ Estimated Fee: 0.00105 CSPR
+└─ Total Cost: 0.10105 CSPR
 ```
 
 ---

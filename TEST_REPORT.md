@@ -102,7 +102,7 @@ To fully verify functionality, test these commands in Discord:
 ```
 /balance address:0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb
 ```
-**Expected**: Returns ETH balance from Pharos network
+**Expected**: Returns CSPR balance from Casper network
 
 #### 2. Token Balance
 ```

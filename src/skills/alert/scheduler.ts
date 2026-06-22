@@ -81,7 +81,7 @@ async function checkBalanceAlert(alertId: string, alert: any) {
     if (balanceNum >= alert.threshold) {
       await sendAlertNotification(
         alert.chatId,
-        `💰 Balance alert triggered!\n\nAddress: \`${alert.address}\`\nCurrent Balance: ${balance} ETH\nThreshold: ${alert.threshold} ETH`
+        `💰 Balance alert triggered!\n\nAddress: \`${alert.address}\`\nCurrent Balance: ${balance} CSPR\nThreshold: ${alert.threshold} CSPR`
       );
       
       logger.info(`Balance alert triggered: ${alertId}`);
