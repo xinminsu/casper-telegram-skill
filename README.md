@@ -4,24 +4,101 @@ A powerful Telegram Bot built with Skill-based architecture for blockchain queri
 
 ## ✨ Features
 
-### 📊 Balance Query
-- Query CSPR balance for any wallet address
+### 📖 Read Queries (读取查询)
+
+#### 🌐 Network & Blockchain Metadata
+- Query node status, network peers, and chainspec
+- Query block information by hash or height
+- Query deploy/transaction details
+- Query block transfers and state root hash
+
+#### 👤 Account, Balance & Gas
+- Query CSPR balance for any wallet address (Casper public key, account hash, or Ethereum-style)
 - Query ERC20 token balances
-- Real-time blockchain data from Casper network
+- Query account info (associated keys, thresholds, named keys)
+- Query purse balance by URef (with full proof details)
+- Real-time gas price queries and transaction fee estimation
+- Query global state by key and path
 
-### ⛽ Gas Related
-- Real-time gas price queries
-- Estimate transaction gas fees
-- Display detailed gas parameters (Gas Limit, Max Fee, Priority Fee)
+#### 📋 Contract & Dictionary
+- Query contract metadata (hash, version, entry points)
+- List all callable entry points with argument types
+- Query dictionary items by URef, by account, or by contract
+- Query stored state items by key and path
+- List all named keys of a contract
 
-### 🔔 Event Notifications
+#### 🪙 CEP-18 / CEP-47 / CEP-78 Tokens
+- CEP-18: total supply, balance of, allowance, token metadata (name/symbol/decimals)
+- CEP-47/78: total supply, owner of, tokens of owner, metadata, approved spender
+- CEP-78: max supply limit, batch owner query
+
+#### ⚖️ Staking & Validators
+- Query all active validators for current era
+- Query single validator detail (stake, commission rate, delegators)
+- Query delegation records for a delegator
+- Query full auction state and validator set changes
+- Query era summary with reward allocations
+
+#### 🔧 General DApp
+- Counter: query current count value
+- AMM: pool reserves, LP balance, staking info
+- Governance: all proposals, proposal detail, vote record
+- RWA: asset record query
+- DEX: open orders query
+
+#### 🔔 Monitoring & Alerts
 - Set up balance change alerts
 - Gas price monitoring alerts
 - Custom message alerts
 - Manage alert lists (add, view, delete)
 
-### 📢 Message Push
-- Push notification messages to chats
+### ✏️ Write Operations (链上写入)
+
+#### 💸 Native CSPR
+- Transfer CSPR to another account
+- Create temporary purses
+- Add/remove associated keys (multi-sig setup)
+- Set action thresholds for account security
+- Bind named keys for contract/token references
+
+#### 🪙 CEP-18 Fungible Tokens
+- Mint / Burn tokens
+- Transfer tokens between accounts
+- Approve / Increase / Decrease allowance
+- Transfer from (approved spender transfers tokens)
+
+#### 🖼️ CEP-47 / CEP-78 NFT
+- Mint single NFT / Batch mint copies
+- Burn single / Batch burn NFTs
+- Transfer / Batch transfer NFTs
+- Approve NFT for spender
+- Update NFT metadata (CEP-78)
+- Set NFT contract admin (CEP-78)
+
+#### ⚖️ Staking / Consensus
+- Bond (self-stake to become validator)
+- Delegate CSPR to a validator
+- Unbond self-staked CSPR
+- Undelegate from a validator
+- Withdraw staking rewards
+- Set validator commission rate
+
+#### 📈 DeFi AMM / Liquidity
+- Swap tokens on AMM DEX
+- Add / Remove liquidity to pools
+- Stake LP tokens for farming rewards
+- Claim farming rewards
+- Create / Cancel limit orders
+
+#### 🔧 General DApp
+- Counter increment / decrement
+- Dictionary key-value put / remove
+- Governance: Create proposal, cast vote, execute proposal
+- RWA asset record saving
+- Generic contract call by hash
+
+### 📢 Bot Utilities
+- Push notification messages to specified chats
 - Support custom message content
 
 ## 🏗️ Architecture
